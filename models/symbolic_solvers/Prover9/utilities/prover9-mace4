@@ -11,12 +11,12 @@
 # This script might not be very useful; one can just as easily run
 # Prover9 and Mace4 in parallel on the command line.
 
-import sys
-import re
 import os
-import tempfile
+import re
 import signal
 import subprocess
+import sys
+import tempfile
 
 ####################################
 

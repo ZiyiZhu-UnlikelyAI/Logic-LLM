@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-import re, sys
+import re
+import sys
 
 print '    dependencies = ['
 

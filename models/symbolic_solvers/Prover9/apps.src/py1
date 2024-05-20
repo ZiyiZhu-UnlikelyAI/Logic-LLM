@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-import sys
 import re
+import sys
 
 size = 0
 g1 = []

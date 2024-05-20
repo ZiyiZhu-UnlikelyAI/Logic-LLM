@@ -1,31 +1,38 @@
 import re
+
 from nltk.inference.prover9 import *
 from nltk.sem.logic import NegatedExpression
+
 from .fol_prover9_parser import Prover9_FOL_Formula
 from .Formula import FOL_Formula
 
 # set the path to the prover9 executable
 # os.environ['PROVER9'] = '../Prover9/bin'
-os.environ['PROVER9'] = './models/symbolic_solvers/Prover9/bin'
+os.environ["PROVER9"] = "./models/symbolic_solvers/Prover9/bin"
+
 
 class FOL_Prover9_Program:
-    def __init__(self, logic_program:str, dataset_name = 'FOLIO') -> None:
+    def __init__(self, logic_program: str, dataset_name="FOLIO") -> None:
         self.logic_program = logic_program
         self.flag = self.parse_logic_program()
         self.dataset_name = dataset_name
 
     def parse_logic_program(self):
-        try:        
+        try:
             # Split the string into premises and conclusion
-            premises_string = self.logic_program.split("Conclusion:")[0].split("Premises:")[1].strip()
+            premises_string = (
+                self.logic_program.split("Conclusion:")[0].split("Premises:")[1].strip()
+            )
             conclusion_string = self.logic_program.split("Conclusion:")[1].strip()
 
             # Extract each premise and the conclusion using regex
-            premises = premises_string.strip().split('\n')
-            conclusion = conclusion_string.strip().split('\n')
+            premises = premises_string.strip().split("\n")
+            conclusion = conclusion_string.strip().split("\n")
 
-            self.logic_premises = [premise.split(':::')[0].strip() for premise in premises]
-            self.logic_conclusion = conclusion[0].split(':::')[0].strip()
+            self.logic_premises = [
+                premise.split(":::")[0].strip() for premise in premises
+            ]
+            self.logic_conclusion = conclusion[0].split(":::")[0].strip()
 
             # convert to prover9 format
             self.prover9_premises = []
@@ -49,14 +56,14 @@ class FOL_Prover9_Program:
             goal = Expression.fromstring(self.prover9_conclusion)
             assumptions = [Expression.fromstring(a) for a in self.prover9_premises]
             timeout = 10
-            #prover = Prover9()
-            #result = prover.prove(goal, assumptions)
-            
+            # prover = Prover9()
+            # result = prover.prove(goal, assumptions)
+
             prover = Prover9Command(goal, assumptions, timeout=timeout)
             result = prover.prove()
             # print(prover.proof())
             if result:
-                return 'True', ''
+                return "True", ""
             else:
                 # If Prover9 fails to prove, we differentiate between False and Unknown
                 # by running Prover9 with the negation of the goal
@@ -65,22 +72,23 @@ class FOL_Prover9_Program:
                 prover = Prover9Command(negated_goal, assumptions, timeout=timeout)
                 negation_result = prover.prove()
                 if negation_result:
-                    return 'False', ''
+                    return "False", ""
                 else:
-                    return 'Unknown', ''
+                    return "Unknown", ""
         except Exception as e:
             return None, str(e)
-        
+
     def answer_mapping(self, answer):
-        if answer == 'True':
-            return 'A'
-        elif answer == 'False':
-            return 'B'
-        elif answer == 'Unknown':
-            return 'C'
+        if answer == "True":
+            return "A"
+        elif answer == "False":
+            return "B"
+        elif answer == "Unknown":
+            return "C"
         else:
             raise Exception("Answer not recognized")
-        
+
+
 if __name__ == "__main__":
     ## ¬∀x (Movie(x) → HappyEnding(x))
     ## ∃x (Movie(x) → ¬HappyEnding(x))
@@ -191,7 +199,7 @@ if __name__ == "__main__":
     GreaterThanNine(subway) ∨ Popular(subway) ::: Subway has a rating greater than 9 or is popular among local residents.
     Conclusion:
     TakeOut(subway) ∧ ¬NegativeReviews(subway) ::: Subway provides take-out service and does not receive many negative reviews."""
-    
+
     prover9_program = FOL_Prover9_Program(logic_program)
     answer, error_message = prover9_program.execute_program()
     print(answer)

@@ -1,7 +1,7 @@
 from nltk.inference.prover9 import *
 
 # set the path to the prover9 executable
-os.environ['PROVER9'] = '../models/symbolic_solvers/Prover9/bin'
+os.environ["PROVER9"] = "../models/symbolic_solvers/Prover9/bin"
 
 arguments = [
     ("(man(x) <-> (not (not man(x))))", []),
@@ -63,7 +63,6 @@ def test_config():
     print(p.proof())
 
 
-
 def test_convert_to_prover9(expr):
     """
     Test that parsing works OK.
@@ -77,7 +76,7 @@ def test_prove(arguments):
     """
     Try some proofs and exhibit the results.
     """
-    for (goal, assumptions) in arguments:
+    for goal, assumptions in arguments:
         g = Expression.fromstring(goal)
         alist = [Expression.fromstring(a) for a in assumptions]
         p = Prover9Command(g, assumptions=alist).prove()

@@ -45,12 +45,12 @@ This program includes embedded test cases using the 'doctest' format:
 # easier to use and more flexible, and the data size of proofs is trivial,
 # so we'll use DOM.  minidom has enough functionality for our needs.
 
-from xml.dom.minidom import *
-import textwrap
-import sys
 import os
 import shlex  # Used to process environment variable GVIZIFY
+import sys
+import textwrap
 from optparse import OptionParser
+from xml.dom.minidom import *
 
 # globals:
 #   options: processed options

@@ -1,7 +1,7 @@
 from sat_problem_solver import LSAT_Z3_Program
 
-if __name__=="__main__":
-    completion = '''# Declarations
+if __name__ == "__main__":
+    completion = """# Declarations
 people = EnumSort([Vladimir, Wendy])
 meals = EnumSort([breakfast, lunch, dinner, snack])
 foods = EnumSort([fish, hot_cakes, macaroni, omelet, poached_eggs])
@@ -22,9 +22,9 @@ is_valid(Exists([m:meals], eats(Vladimir, m) == fish)) ::: (A)
 is_valid(Exists([m:meals], eats(Vladimir, m) == hot_cakes)) ::: (B)
 is_valid(Exists([m:meals], eats(Vladimir, m) == macaroni)) ::: (C)
 is_valid(Exists([m:meals], eats(Vladimir, m) == omelet)) ::: (D)
-is_valid(Exists([m:meals], eats(Vladimir, m) == poached_eggs)) ::: (E)'''
+is_valid(Exists([m:meals], eats(Vladimir, m) == poached_eggs)) ::: (E)"""
 
-    completion_2 = '''# declare variables
+    completion_2 = """# declare variables
 technicians = EnumSort([Stacy, Urma, Wim, Xena, Yolanda, Zane])
 machines = EnumSort([radios, televisions, VCRs])
 repairs = Function([technicians, machines] -> [bool])
@@ -62,9 +62,9 @@ is_sat(ForAll([m:machines], repairs(Urma, m) == repairs(Xena, m)))
 # (D)
 is_sat(ForAll([m:machines], repairs(Wim, m) == repairs(Xena, m)))
 # (E)
-is_sat(ForAll([m:machines], repairs(Xena, m) == repairs(Yolanda, m)))'''
+is_sat(ForAll([m:machines], repairs(Xena, m) == repairs(Yolanda, m)))"""
 
-    completion_3 = '''# declare variables
+    completion_3 = """# declare variables
 CD_types = EnumSort([jazz, opera, pop, rap, soul])
 new_used = EnumSort([new, used])
 on_sale = Function([CD_types, new_used] -> [bool])
@@ -102,9 +102,9 @@ is_sat(Not(on_sale(rap, used)))
 is_sat(And(Not(on_sale(jazz, new)), Not(on_sale(jazz, used))))
 
 # (E) Neither type of rap and neither type of soul is on sale
-is_sat(And(Not(on_sale(rap, new)), Not(on_sale(rap, used)), Not(on_sale(soul, new)), Not(on_sale(soul, used))))'''
+is_sat(And(Not(on_sale(rap, new)), Not(on_sale(rap, used)), Not(on_sale(soul, new)), Not(on_sale(soul, used))))"""
 
-    completion_4 = '''# Declarations
+    completion_4 = """# Declarations
 children = EnumSort([Fred, Juan, Marc, Paul, Nita, Rachel, Trisha])
 lockers = EnumSort([1, 2, 3, 4, 5])
 genders = EnumSort([boy, girl])
@@ -125,9 +125,9 @@ is_valid(Exists([c:children], And(assigned(Juan) == 4, assigned(c) == 4, c != Ju
 is_valid(Exists([c:children], And(assigned(Juan) == 5, assigned(c) == 5, c != Juan))) ::: (B)
 is_valid(assigned(Paul) == 2) ::: (C)
 is_valid(assigned(Rachel) == 2) ::: (D)
-is_valid(assigned(Rachel) == 5) ::: (E)'''
+is_valid(assigned(Rachel) == 5) ::: (E)"""
 
-    completion_5 = '''# Declarations
+    completion_5 = """# Declarations
 vehicles = EnumSort([hatchback, limousine, pickup, roadster, sedan, van])
 # 1 for Monday, 6 for Saturday
 days = EnumSort([1, 2, 3, 4, 5, 6])
@@ -146,9 +146,9 @@ is_sat(And(serviced(pickup) == 2, serviced(hatchback) == 3, serviced(limousine) 
 is_sat(And(serviced(pickup) == 2, serviced(roadster) == 3, serviced(hatchback) == 5)) ::: (B)
 is_sat(And(serviced(sedan) == 2, serviced(limousine) == 3, serviced(hatchback) == 5)) ::: (C)
 is_sat(And(serviced(van) == 2, serviced(limousine) == 3, serviced(hatchback) == 5)) ::: (D)
-is_sat(And(serviced(van) == 2, serviced(roadster) == 3, serviced(limousine) == 5)) ::: (E)'''
+is_sat(And(serviced(van) == 2, serviced(roadster) == 3, serviced(limousine) == 5)) ::: (E)"""
 
-    completion_6 = '''# Declarations
+    completion_6 = """# Declarations
 vehicles = EnumSort([hatchback, limousine, pickup, roadster, sedan, van])
 days = IntSort([Monday, Tuesday, Wednesday, Thursday, Friday, Saturday])
 serviced = Function([vehicles] -> [days])
@@ -167,9 +167,9 @@ is_sat(And(serviced(pickup) == Tuesday, serviced(hatchback) == Wednesday, servic
 is_sat(And(serviced(pickup) == Tuesday, serviced(roadster) == Wednesday, serviced(hatchback) == Friday)) ::: (B)
 is_sat(And(serviced(sedan) == Tuesday, serviced(limousine) == Wednesday, serviced(hatchback) == Friday)) ::: (C)
 is_sat(And(serviced(van) == Tuesday, serviced(limousine) == Wednesday, serviced(hatchback) == Friday)) ::: (D)
-is_sat(And(serviced(van) == Tuesday, serviced(roadster) == Wednesday, serviced(limousine) == Friday)) ::: (E)'''
+is_sat(And(serviced(van) == Tuesday, serviced(roadster) == Wednesday, serviced(limousine) == Friday)) ::: (E)"""
 
-    completion_7 = '''# Declarations
+    completion_7 = """# Declarations
 days = IntSort([Monday, Tuesday, Wednesday, Thursday, Friday])
 divisions = EnumSort([Operations, Production, Sales])
 toured = Function([days] -> [divisions])
@@ -192,10 +192,10 @@ is_sat(Exists([d:days], And(toured(d) == Sales, ForAll([d2:days], Implies(d2 < d
 is_sat(Exists([d:days], And(toured(d) == Operations, ForAll([d2:days], Implies(d2 < d, toured(d2) != Production))))) ::: (B)
 is_sat(toured(Monday) == Sales) ::: (C)
 is_sat(toured(Tuesday) == Production) ::: (D)
-is_sat(toured(Wednesday) == Operations) ::: (E)'''
+is_sat(toured(Wednesday) == Operations) ::: (E)"""
 
-    z3_program = LSAT_Z3_Program(completion_6, 'AR-LSAT')
+    z3_program = LSAT_Z3_Program(completion_6, "AR-LSAT")
     ans, error_message = z3_program.execute_program()
-    #print(ans)
+    # print(ans)
     print(error_message)
     print(z3_program.standard_code)

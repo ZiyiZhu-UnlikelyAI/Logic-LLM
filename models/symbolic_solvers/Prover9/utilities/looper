@@ -19,10 +19,10 @@
 help_string = 'need 3 args: (prover9|mace4) (assumptions|goals) head < candidates\n'
 
 import os
-import sys
 import re
-import time
 import socket
+import sys
+import time
 from subprocess import *
 
 ####################################

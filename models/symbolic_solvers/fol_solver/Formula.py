@@ -1,10 +1,13 @@
-from nltk.tree import Tree
-from .fol_parser import FOL_Parser
-from concurrent.futures import ThreadPoolExecutor, TimeoutError, ProcessPoolExecutor
 import signal
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, TimeoutError
+
+from nltk.tree import Tree
+
+from .fol_parser import FOL_Parser
 
 # def handler(signum, frame):
 #     raise Exception("Timeout!")
+
 
 class FOL_Formula:
     def __init__(self, str_fol) -> None:
@@ -22,18 +25,20 @@ class FOL_Formula:
             tree = None
             self.is_valid = False
             return
-    
+
         self.tree = tree
         if tree is None:
             self.is_valid = False
         else:
             self.is_valid = True
-            self.variables, self.constants, self.predicates = self.parser.symbol_resolution(tree)
-    
+            self.variables, self.constants, self.predicates = (
+                self.parser.symbol_resolution(tree)
+            )
+
     def __str__(self) -> str:
-        _, rule_str = self.parser.msplit(''.join(self.tree.leaves()))
+        _, rule_str = self.parser.msplit("".join(self.tree.leaves()))
         return rule_str
-    
+
     def is_valid(self):
         return self.is_valid
 
@@ -52,21 +57,21 @@ class FOL_Formula:
         template = self.tree.copy(deep=True)
         name_mapping = {}
         for i, f in enumerate(self.predicates):
-            name_mapping[f] = 'F%d' % i
+            name_mapping[f] = "F%d" % i
         for i, f in enumerate(self.constants):
-            name_mapping[f] = 'C%d' % i
+            name_mapping[f] = "C%d" % i
 
         self._get_formula_template(template, name_mapping)
         self.template = template
-        _, self.template_str = self.parser.msplit(''.join(self.template.leaves()))
+        _, self.template_str = self.parser.msplit("".join(self.template.leaves()))
         return name_mapping, self.template_str
-        
-    
-if __name__ == '__main__':
+
+
+if __name__ == "__main__":
     # str_fol = '\u2200x (Dog(x) \u2227 WellTrained(x) \u2227 Gentle(x) \u2192 TherapyAnimal(x))'
     # str_fol = '\u2200x (Athlete(x) \u2227 WinsGold(x, olympics) \u2192 OlympicChampion(x))'
-    str_fol = '\u2203x \u2203y (Czech(x) \u2227 Book(y) \u2227 Author(x, y) \u2227 Publish(y, year1946))'
-    
+    str_fol = "\u2203x \u2203y (Czech(x) \u2227 Book(y) \u2227 Author(x, y) \u2227 Publish(y, year1946))"
+
     fol_rule = FOL_Formula(str_fol)
     if fol_rule.is_valid:
         print(fol_rule)

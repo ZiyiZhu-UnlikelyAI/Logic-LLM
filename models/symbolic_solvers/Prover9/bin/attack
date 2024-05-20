@@ -22,10 +22,10 @@
 # as comment lines and are passed directly through to stdout.
 
 import os
-import sys
 import re
-import time
 import socket
+import sys
+import time
 from subprocess import *
 
 ####################################
