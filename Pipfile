@@ -7,6 +7,11 @@ name = "pypi"
 tqdm = "*"
 backoff = "*"
 openai = "*"
+func-timeout = "*"
+nltk = "*"
+ply = "*"
+z3 = "*"
+scitools-pyke = "*"
 
 [dev-packages]
 neovim = "*"
@@ -15,6 +20,8 @@ flake8 = "*"
 autoflake = "*"
 isort = "*"
 jedi = "*"
+pdbpp = "*"
+ipython = "*"
 
 [requires]
 python_version = "3.10"

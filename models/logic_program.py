@@ -5,6 +5,7 @@ import json
 import os
 
 from tqdm import tqdm
+
 from utils import OpenAIModel
 
 
@@ -115,9 +116,8 @@ class LogicProgramGenerator:
                     "raw_logic_programs": programs,
                 }
                 outputs.append(output)
-            except Exception as e:
+            except:
                 print("Error in generating logic programs for example: ", example["id"])
-                print(e)
 
         # save outputs
         with open(
@@ -178,12 +178,11 @@ class LogicProgramGenerator:
                             "raw_logic_programs": programs,
                         }
                         outputs.append(output)
-                    except Exception as e:
+                    except:
                         print(
                             "Error in generating logic programs for example: ",
                             sample["id"],
                         )
-                        print(e)
 
         # remove examples with duplicate ids from the result
         outputs = list({output["id"]: output for output in outputs}.values())

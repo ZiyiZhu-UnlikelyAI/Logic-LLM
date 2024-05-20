@@ -12,5 +12,4 @@ for line in sys.stdin:
         counts[line] = 1
 
 for k in counts.keys():
-    print '%s    %3d' % (k,counts[k])
-
+    print("%s    %3d" % (k, counts[k]))

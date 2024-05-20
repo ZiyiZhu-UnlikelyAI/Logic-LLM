@@ -1,19 +1,21 @@
 import asyncio
-import os
 from typing import Any
 
 import backoff  # for exponential backoff
-import openai
+from openai import AsyncOpenAI, OpenAI, RateLimitError
+
+client = OpenAI()
+aclient = AsyncOpenAI()
 
 
-@backoff.on_exception(backoff.expo, openai.error.RateLimitError)
+@backoff.on_exception(backoff.expo, RateLimitError)
 def completions_with_backoff(**kwargs):
-    return openai.Completion.create(**kwargs)
+    return client.completions.create(**kwargs)
 
 
-@backoff.on_exception(backoff.expo, openai.error.RateLimitError)
+@backoff.on_exception(backoff.expo, RateLimitError)
 def chat_completions_with_backoff(**kwargs):
-    return openai.ChatCompletion.create(**kwargs)
+    return client.chat.completions.create(**kwargs)
 
 
 async def dispatch_openai_chat_requests(
@@ -37,7 +39,7 @@ async def dispatch_openai_chat_requests(
         List of responses from OpenAI API.
     """
     async_responses = [
-        openai.ChatCompletion.acreate(
+        aclient.chat.completions.create(
             model=model,
             messages=x,
             temperature=temperature,
@@ -59,7 +61,7 @@ async def dispatch_openai_prompt_requests(
     stop_words: list[str],
 ) -> list[str]:
     async_responses = [
-        openai.Completion.acreate(
+        aclient.completions.create(
             model=model,
             prompt=x,
             temperature=temperature,
@@ -76,7 +78,6 @@ async def dispatch_openai_prompt_requests(
 
 class OpenAIModel:
     def __init__(self, API_KEY, model_name, stop_words, max_new_tokens) -> None:
-        openai.api_key = API_KEY
         self.model_name = model_name
         self.max_new_tokens = max_new_tokens
         self.stop_words = stop_words
@@ -91,7 +92,7 @@ class OpenAIModel:
             top_p=1.0,
             stop=self.stop_words,
         )
-        generated_text = response["choices"][0]["message"]["content"].strip()
+        generated_text = response.choices[0].message.content.strip()
         return generated_text
 
     # used for text/code-davinci
@@ -106,7 +107,7 @@ class OpenAIModel:
             presence_penalty=0.0,
             stop=self.stop_words,
         )
-        generated_text = response["choices"][0]["text"].strip()
+        generated_text = response.choices[0].text.strip()
         return generated_text
 
     def generate(self, input_string, temperature=0.0):
@@ -116,7 +117,7 @@ class OpenAIModel:
             "text-davinci-003",
         ]:
             return self.prompt_generate(input_string, temperature)
-        elif self.model_name in ["gpt-4", "gpt-3.5-turbo"]:
+        elif self.model_name in ["gpt-4", "gpt-3.5-turbo", "gpt-4o", "gpt-4-turbo"]:
             return self.chat_generate(input_string, temperature)
         else:
             raise Exception("Model name not recognized")
@@ -135,7 +136,7 @@ class OpenAIModel:
                 self.stop_words,
             )
         )
-        return [x["choices"][0]["message"]["content"].strip() for x in predictions]
+        return [x.choices[0].message.content.strip() for x in predictions]
 
     def batch_prompt_generate(self, prompt_list, temperature=0.0):
         predictions = asyncio.run(
@@ -148,7 +149,7 @@ class OpenAIModel:
                 self.stop_words,
             )
         )
-        return [x["choices"][0]["text"].strip() for x in predictions]
+        return [x.choices[0].text.strip() for x in predictions]
 
     def batch_generate(self, messages_list, temperature=0.0):
         if self.model_name in [
@@ -157,7 +158,7 @@ class OpenAIModel:
             "text-davinci-003",
         ]:
             return self.batch_prompt_generate(messages_list, temperature)
-        elif self.model_name in ["gpt-4", "gpt-3.5-turbo"]:
+        elif self.model_name in ["gpt-4", "gpt-3.5-turbo", "gpt-4o", "gpt-4-turbo"]:
             return self.batch_chat_generate(messages_list, temperature)
         else:
             raise Exception("Model name not recognized")
@@ -173,5 +174,5 @@ class OpenAIModel:
             frequency_penalty=0.0,
             presence_penalty=0.0,
         )
-        generated_text = response["choices"][0]["text"].strip()
+        generated_text = response.choices[0].text.strip()
         return generated_text
